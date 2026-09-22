@@ -1,0 +1,3 @@
+# ViaBedrock Fabric client configuration
+# This file is intentionally small; the core ViaBedrock config remains in config/viabedrock-fabric/viabedrock.yml.
+# The Bedrock selector currently targets the latest Bedrock protocol registered by the bundled core.

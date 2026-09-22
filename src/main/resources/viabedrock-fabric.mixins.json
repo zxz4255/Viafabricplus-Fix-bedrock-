@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.raphimc.viabedrockfabric.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ConnectionAccessor",
+    "JoinMultiplayerScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://repo.viaversion.com/everything/' }
+    maven { url = 'https://repo.viaversion.com/' }
+    maven { url = 'https://maven.lenni0451.net/releases' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${loader_version}"
+
+    // ViaVersion runtime/bootstrap. No ViaFabricPlus dependency is used.
+    include "com.viaversion:vialoader:4.0.6"
+    include "com.viaversion:viaversion-common:5.12.0"
+
+    // ViaBedrock core dependencies used by the supplied patched source.
+    include("io.jsonwebtoken:jjwt-impl:0.13.0")
+    include("io.jsonwebtoken:jjwt-gson:0.13.0") { exclude group: 'com.google.code.gson', module: 'gson' }
+    include("net.lenni0451.mcstructs-bedrock:text:2.0.1") { exclude group: 'com.google.code.gson', module: 'gson' }
+    include("net.lenni0451.mcstructs-bedrock:forms:2.0.1") { exclude group: 'com.google.code.gson', module: 'gson' }
+    include("com.viaversion.mcstructs:dialog:5-3.2.2-20251210.004302-1") {
+        exclude group: 'com.viaversion.mcstructs', module: 'core'
+        exclude group: 'com.viaversion.mcstructs', module: 'text'
+        exclude group: 'com.viaversion.mcstructs', module: 'snbt'
+        exclude group: 'com.viaversion.mcstructs', module: 'converter'
+    }
+    include "com.vdurmont:semver4j:3.1.0"
+    include("com.github.oryxel1:CubeConverter:abecffaaea") { transitive = false }
+    include("team.unnamed:mocha:3.0.1") { transitive = false }
+    include "at.yawk.lz4:lz4-java:1.11.3"
+
+    // The supplied ViaBedrock source expects these Cloudburst Netty RakNet classes.
+    include "dev.kastle.netty:netty-transport-raknet:1.7.4"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = Integer.parseInt(project.java_version)
+    options.encoding = 'UTF-8'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    withSourcesJar()
+}
+
+jar {
+    from('LICENSE') {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+publishing {
+    publications {
+        create('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        // Publish locally when needed; CI only builds the jar.
+        mavenLocal()
+    }
+}

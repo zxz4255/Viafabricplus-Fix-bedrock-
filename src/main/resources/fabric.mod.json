@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "viabedrock-fabric-client",
+  "version": "${version}",
+  "name": "ViaBedrock Fabric Client",
+  "description": "Direct Bedrock client for Minecraft 26.2 using the supplied patched ViaBedrock core. It does not use ViaProxy or ViaFabricPlus proxy code.",
+  "authors": ["ViaBedrock Fabric Client"],
+  "license": "GPL-3.0-only",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "net.raphimc.viabedrockfabric.ViaBedrockFabricClient"
+    ]
+  },
+  "mixins": [
+    "viabedrock-fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "26.2"
+  }
+}
